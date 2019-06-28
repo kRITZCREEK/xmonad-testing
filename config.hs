@@ -44,6 +44,8 @@ main = do
   _ <- D.requestName dbus (D.busName_ "org.xmonad.Log")
     [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   _ <- spawn $ "feh --bg-scale " ++ bg_image
+  -- Enables shared clipboard under VMWare
+  _ <- spawn "vmware-user"
 
   xmonad
     $ dynamicProjects projects
@@ -57,11 +59,11 @@ main = do
 -- GLOBAL VARIABLES                                                          {{{
 --------------------------------------------------------------------------------
 -- General config
-myTerminal = "alacritty"
+myTerminal = "urxvt"
 myModMask = mod4Mask
 myBorderWidth = 1
 myBrowser = "firefox"
-mySpacing = Border 0 10 10 10
+mySpacing = Border 3 3 3 3
 prompt = 20
 
 -- Colours
@@ -91,7 +93,7 @@ myFont = "xft:SpaceMono Nerd Font Mono:" ++ "fontformat=truetype:size=10:antiali
 
 -- Background
 bg_image :: FilePath
-bg_image = "~/Downloads/wallhaven-639784.jpg"
+bg_image = "~/Downloads/wallpaper.jpg"
 
 -----------------------------------------------------------------------------}}}
 -- LAYOUT                                                                    {{{
@@ -182,12 +184,6 @@ projects =
             , projectStartHook = Just $ do spawn myBrowser
                                            spawn myTerminal
             }
-  , Project { projectName = "sd"
-            , projectDirectory = "~/work/slamx"
-            , projectStartHook = Just $ do
-                spawn (myTerminal ++ " -e zsh -c \"yarn watch\"")
-                spawn (myTerminal ++ " -e zsh -c \"slamdata --rest 19.0.1 ~/.config/sdbe\"")
-            }
   ]
 
 -----------------------------------------------------------------------------}}}
@@ -198,8 +194,7 @@ myAdditionalKeys c = (subtitle "Custom Keys":) $ mkNamedKeymap c $
 
 myProgramKeys =
   [ ("M-f"        , addName "Open firefox" $ spawn myBrowser)
-  , ("M-e"        , addName "Open Emacs" $ spawn "emacsclient -c")
-  , ("M-S-f"      , addName "Open chromium" $ spawn "chromium")
+  , ("M-e"        , addName "Open Emacs" $ spawn "emacs")
   , ("M-t"        , addName "Open terminal" $ spawn myTerminal)
   , ("M-d"        , addName "Open rofi" $ spawn "rofi -show run")
   ]
@@ -211,9 +206,9 @@ myScratchpadKeys =
 
 myWindowManagerKeys =
   [ ("M-b"        , addName "Do (not) respect polybar" $ sendMessage ToggleStruts)
-  , ("M-S-b"      , addName "Increase spacing between windows" $ incScreenWindowSpacing 10)
-  , ("M-v"        , addName "Set default spacing between windows" $ setScreenWindowSpacing 10)
-  , ("M-S-v"      , addName "Decrease spacing between windows" $ incScreenWindowSpacing (-10))
+  , ("M-S-b"      , addName "Increase spacing between windows" $ incScreenWindowSpacing 5)
+  , ("M-v"        , addName "Set default spacing between windows" $ setScreenWindowSpacing 5)
+  , ("M-S-v"      , addName "Decrease spacing between windows" $ incScreenWindowSpacing (-5))
   , ("M-u"        , addName "Switch view to project" $ switchProjectPrompt warmPromptTheme)
   , ("M-S-u"      , addName "Send current window to project" $ shiftToProjectPrompt coldPromptTheme)
   ]
@@ -268,7 +263,7 @@ myAddSpaces len str = sstr ++ replicate (len - length sstr) ' '
 --------------------------------------------------------------------------------
 myStartupHook = do
   setWMName "LG3D"
-  spawn "$HOME/dotfiles/polybar/launch.sh"
+  spawn "$HOME/.xmonad/polybar.sh"
   -- spawn "dropbox"
 
 -----------------------------------------------------------------------------}}}
