@@ -264,6 +264,7 @@ myAddSpaces len str = sstr ++ replicate (len - length sstr) ' '
 myStartupHook = do
   setWMName "LG3D"
   spawn "$HOME/.xmonad/polybar.sh"
+  spawn "nm-applet" -- Starts the network manager tray icon
   -- spawn "dropbox"
 
 -----------------------------------------------------------------------------}}}
